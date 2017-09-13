@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hailin.dao.OrderServiceDAO">
+	
+	<!-- 订单明细resultMap -->
+	<resultMap type="org.hailin.entity.OrderDtl" id="OrderDtlResultMap">
+		<result column="sorder_id" property="sorder_id" jdbcType="CHAR"/>
+		<result column="item_id" property="item_id" jdbcType="CHAR"/>
+		<result column="price" property="price" jdbcType="DOUBLE"/>
+		<result column="qty" property="qty" jdbcType="INTEGER"/>
+		<result column="unit" property="unit" jdbcType="CHAR"/>
+		<result column="item_title_image" property="item_title_image" jdbcType="CHAR"/>
+		<result column="seller_id" property="seller_id" jdbcType="CHAR"/>
+	</resultMap>
+	
+	<!-- 业务订单resultMap -->
+	<resultMap type="org.hailin.entity.SellerOrder" id="sellerOrderResultMap">
+		<result column="sorder_id" property="sorder_id" jdbcType="CHAR"/>
+		<result column="seller_id" property="seller_id" jdbcType="CHAR"/>
+		<result column="seller_name" property="seller_name" jdbcType="CHAR"/>
+		<result column="summary_qty" property="summary_qty" jdbcType="INTEGER"/>
+		<result column="summary_price" property="summary_price" jdbcType="DOUBLE"/>
+		<result column="user_id" property="user_id" jdbcType="CHAR"/>
+		<result column="order_id" property="order_id" jdbcType="CHAR"/>
+		<result column="note" property="note" jdbcType="CHAR"/>
+		<result column="province_name" property="province_name" jdbcType="CHAR"/>
+		<result column="city_name" property="city_name" jdbcType="CHAR"/>
+		<result column="area_name" property="area_name" jdbcType="CHAR"/>
+		<result column="address" property="address" jdbcType="CHAR"/>
+		<result column="close_time" property="close_time"  jdbcType="CHAR"/>
+		<result column="order_stat" property="order_stat"  jdbcType="CHAR"/>
+		<collection property="orderDtls" column="sorder_id" javaType="ArrayList" 
+	                ofType="org.hailin.pay.ali.entity.OrderDtl" select="getOrderDtlBySID"/>
+	</resultMap>
+	
+	
+	<!-- 获取订单详情 -->
+	<select id="getSellerOrderBySid" resultMap="sellerOrderResultMap">
+		select * from seller_order where seller_id=#{seller_id} and sorder_id=#{sorder_id}
+	</select>
+	
+	<!-- 获取订单明细 -->
+	<select id="getOrderDtlBySID" resultMap="OrderDtlResultMap" parameterType="java.lang.String">
+		select sorder_id,item_id,item_name,price,qty,unit,item_title_image from order_dtl odtl where sorder_id=#{sorder_id}
+	</select>
+	
+	
+	<!-- 获取用户不同状态订单 -->
+	<select id="getSellerOrderByStat" resultType="org.hailin.entity.SellerOrder">
+		select * from seller_order where order_stat=#{order_stat}
+	</select>
+
+</mapper>
